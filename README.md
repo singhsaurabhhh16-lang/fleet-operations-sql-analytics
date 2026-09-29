@@ -37,6 +37,8 @@ Across **92,000 fleet service events**, total maintenance expenditure reached **
 
 The original dataset was stored as a flat staging table (`stg_fleet_raw`) containing 92,000 records. To improve analytical structure and reduce repeated descriptive attributes, I transformed the data into a **Kimball-style Star Schema** consisting of two dimension tables and one fact table.
 
+![Star Schema ERD](star_schema_erd.png)
+
 ### Key Engineering Decisions
 
 * **Dim_Vehicle:** Extracted unique vehicle profiles so static attributes such as make, model, manufacture year, capacity, and vehicle type are stored once.
