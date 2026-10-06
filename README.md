@@ -98,11 +98,11 @@ The highest-cost quartile accounted for **79.35% of total maintenance expenditur
 To translate historical SQL findings into an active decision-support system, an enterprise 3-tier diagnostic report was engineered in Power BI:
 
 ### 1. Fleet Operations Executive Dashboard
-Designed for executive decision-makers to track high-level operational efficiency, overall maintenance spend, fleet fuel burn, and downtime trends across asset categories[cite: 2].
+Designed for executive decision-makers to track high-level operational efficiency, overall maintenance spend, fleet fuel burn, and downtime trends across asset categories.
 ![Executive Dashboard](images/01_executive_dashboard.png)
 
 ### 2. Fleet Telemetry & Health Analytics
-Telemetry risk matrix correlating engine operating hours against repair costs to identify anomaly clusters, paired with fleet-wide health status and route failure distributions[cite: 3].
+Telemetry risk matrix correlating engine operating hours against repair costs to identify anomaly clusters, paired with fleet-wide health status and route failure distributions.
 ![Telemetry Analytics](images/02_telemetry_analytics.png)
 
 ### 3. Deep-Dive Diagnostics (Vehicle-Level Drillthrough)
@@ -110,7 +110,7 @@ Allows maintenance engineers to right-click from fleet-level visuals and drill d
 ![Vehicle Drillthrough](images/03_drillthrough_vehicle_detail.png)
 
 ### 4. Contextual Hover Tooltips (Report-Page Tooltips)
-Custom report-page tooltips on route analysis visuals provide dynamic failure share breakdowns on hover without cluttering the main visual layout[cite: 4].
+Custom report-page tooltips on route analysis visuals provide dynamic failure share breakdowns on hover without cluttering the main visual layout.
 ![Contextual Tooltip Hover](images/04_contextual_tooltip_hover.png)
 
 ---
