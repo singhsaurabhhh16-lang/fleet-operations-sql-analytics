@@ -1,6 +1,7 @@
 # Enterprise Fleet Maintenance & Telemetry Operations Analytics
 
 [![SQL Server](https://img.shields.io/badge/SQL%20Server-2019%2B-CC292B?style=for-the-badge\&logo=microsoftsqlserver\&logoColor=white)](https://www.microsoft.com/sql-server)
+[![Power BI](https://img.shields.io/badge/Power_BI-Desktop-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)](https://powerbi.microsoft.com/)
 [![Architecture](https://img.shields.io/badge/Architecture-Kimball%20Star%20Schema-blue?style=for-the-badge)](#data-architecture--my-modeling-approach)
 [![Records Analyzed](https://img.shields.io/badge/Records%20Analyzed-92%2C000%2B-green?style=for-the-badge)](#core-kpi-snapshot)
 [![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)](#technical-tooling)
@@ -92,6 +93,85 @@ The highest-cost quartile accounted for **79.35% of total maintenance expenditur
 
 ---
 
+## 📊 Interactive Power BI Diagnostics Dashboard
+
+To translate historical SQL findings into an active decision-support system, an enterprise 3-tier diagnostic report was engineered in Power BI:
+
+### 1. Fleet Operations Executive Dashboard
+Designed for executive decision-makers to track high-level operational efficiency, overall maintenance spend, fleet fuel burn, and downtime trends across asset categories[cite: 2].
+![Executive Dashboard](images/01_executive_dashboard.png)
+
+### 2. Fleet Telemetry & Health Analytics
+Telemetry risk matrix correlating engine operating hours against repair costs to identify anomaly clusters, paired with fleet-wide health status and route failure distributions[cite: 3].
+![Telemetry Analytics](images/02_telemetry_analytics.png)
+
+### 3. Deep-Dive Diagnostics (Vehicle-Level Drillthrough)
+Allows maintenance engineers to right-click from fleet-level visuals and drill down directly into individual vehicle records, maintenance histories, and telemetry logs.
+![Vehicle Drillthrough](images/03_drillthrough_vehicle_detail.png)
+
+### 4. Contextual Hover Tooltips (Report-Page Tooltips)
+Custom report-page tooltips on route analysis visuals provide dynamic failure share breakdowns on hover without cluttering the main visual layout[cite: 4].
+![Contextual Tooltip Hover](images/04_contextual_tooltip_hover.png)
+
+---
+
+## 📐 Key DAX Measures & Business Logic
+
+Core metrics are constructed using **Measure Branching** best practices, referencing modular base measures rather than raw aggregations to ensure performance optimization, code reusability, and dynamic recalculation across report slicers:
+
+### 1. Cost per Operating Hour
+Normalizes total fleet maintenance spend over cumulative machine operating hours to evaluate baseline operational wear efficiency:
+```dax
+Cost per Operating Hour = 
+DIVIDE(
+    [Total Maintenance Cost], 
+    SUM(Fact_Fleet_Operations[Operating Hours]), 
+    0
+)
+```
+### 2. Average Cost per Service Event
+Measures mean repair expenditure per maintenance event across asset classes and route environments:
+```dax
+Avg Cost per Event = 
+DIVIDE(
+    [Total Maintenance Cost], 
+    [Total Vehicles], 
+    0
+)
+```
+### 3. Overhaul Cost Share
+Quantifies the budget impact of catastrophic engine rebuilds relative to total fleet expenditure using filter context modification:```dax
+Overhaul Cost Share =
+DIVIDE(
+CALCULATE(
+[Total Maintenance Cost],
+Fact_Fleet_Operations[maintenance_type] = "Engine Overhaul"
+),
+[Total Maintenance Cost],
+0
+)
+```
+### 4. Anomaly Rate
+Computes the proportion of service events exhibiting telemetry anomalies against the total operational footprint:```dax
+Anomaly Rate = 
+DIVIDE(
+    [Total Anomalies], 
+    [Total Vehicles], 
+    0
+)
+```
+### 5. Health_Status
+Categorizes each asset into a dynamic diagnostic risk tier based on combined telemetry flags and historical mechanical failure:```dax
+Health_Status =
+SWITCH(
+TRUE(),
+Dim_Telemetry[failure_history] = 1 && Dim_Telemetry[anomalies_detected] = 1, "Critical",
+Dim_Telemetry[failure_history] = 1 || Dim_Telemetry[anomalies_detected] = 1, "Warning",
+"Healthy"
+)
+```
+---
+
 ## Repository Structure
 
 ```text
@@ -99,27 +179,36 @@ fleet-operations-sql-analytics/
 │
 ├── README.md
 │
-└── sql/
-    ├── 01_schema_and_etl.sql
-    └── 02_fleet_analytics_queries.sql
+├── sql/
+│   ├── 01_schema_and_etl.sql
+│   └── 02_fleet_analytics_queries.sql
+│
+├── power_bi/
+│   └── Fleet_Telemetry_Diagnostics_Dashboard.pbix
+│
+└── images/
+    ├── star_schema_erd.png
+    ├── 01_executive_dashboard.png
+    ├── 02_telemetry_analytics.png
+    ├── 03_drillthrough_vehicle_detail.png
+    └── 04_contextual_tooltip_hover.png
 ```
-
-### SQL Files
+### Project Deliverables
 
 * **01_schema_and_etl.sql** — Star Schema DDL, constraints, staging transformation, and ETL logic.
 * **02_fleet_analytics_queries.sql** — 24 business-focused analytical queries covering fleet performance, maintenance costs, downtime, utilization, and operational patterns.
+* **03_Fleet_Telemetry_Diagnostics_Dashboard.pbix** — Complete interactive Power BI report with Kimball star schema relationships, drillthrough pages, contextual hover tooltips, and modular DAX calculations.
 
----
+---	
 
 ## Technical Tooling
 
-| Category                  | Technologies                                                                          |
-| :------------------------ | :------------------------------------------------------------------------------------ |
-| **Database**              | Microsoft SQL Server                                                                  |
-| **Language**              | T-SQL                                                                                 |
-| **Data Modeling**         | Kimball Dimensional Modeling / Star Schema                                            |
-| **SQL Techniques**        | CTEs, Window Functions, `LAG`, `DENSE_RANK`, `NTILE`, Aggregations, Joins, Subqueries |
-| **Data Transformation**   | SQL-based ETL / Staging                                                               |
-| **Version Control**       | Git & GitHub                                                                          |
-| **Business Intelligence** | Power BI                                                                              |
-
+| Category | Technologies |
+| :--- | :--- |
+| **Database** | Microsoft SQL Server |
+| **Language** | T-SQL, DAX |
+| **Data Modeling** | Kimball Dimensional Modeling / Star Schema |
+| **SQL Techniques** | CTEs, Window Functions, `LAG`, `DENSE_RANK`, `NTILE`, Aggregations, Joins, Subqueries |
+| **Data Transformation** | SQL-based ETL / Staging |
+| **Business Intelligence** | Microsoft Power BI Desktop (Drillthrough, Report Tooltips, Measure Branching) |
+| **Version Control** | Git & GitHub |
