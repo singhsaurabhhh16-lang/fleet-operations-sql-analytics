@@ -140,7 +140,8 @@ DIVIDE(
 )
 ```
 ### 3. Overhaul Cost Share
-Quantifies the budget impact of catastrophic engine rebuilds relative to total fleet expenditure using filter context modification:```dax
+Quantifies the budget impact of catastrophic engine rebuilds relative to total fleet expenditure using filter context modification:
+```dax
 Overhaul Cost Share =
 DIVIDE(
 CALCULATE(
@@ -152,7 +153,8 @@ Fact_Fleet_Operations[maintenance_type] = "Engine Overhaul"
 )
 ```
 ### 4. Anomaly Rate
-Computes the proportion of service events exhibiting telemetry anomalies against the total operational footprint:```dax
+Computes the proportion of service events exhibiting telemetry anomalies against the total operational footprint:
+```dax
 Anomaly Rate = 
 DIVIDE(
     [Total Anomalies], 
@@ -161,7 +163,8 @@ DIVIDE(
 )
 ```
 ### 5. Health_Status
-Categorizes each asset into a dynamic diagnostic risk tier based on combined telemetry flags and historical mechanical failure:```dax
+Categorizes each asset into a dynamic diagnostic risk tier based on combined telemetry flags and historical mechanical failure:
+```dax
 Health_Status =
 SWITCH(
 TRUE(),
